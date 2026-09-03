@@ -1,10 +1,13 @@
 /* =========================================================
-   MAIN.JS - Neverness to Everness — Prelander COMPLETE
+   MAIN.JS
+   Neverness to Everness — Prelander 1
    ========================================================= */
+
 
 /* =========================================================
    VIDEO COVER
    ========================================================= */
+
 (function setupVideoCover() {
   var cover = document.getElementById('videoCover');
   if (!cover) return;
@@ -17,9 +20,11 @@
   }, 2200);
 })();
 
+
 /* =========================================================
    BACKGROUND VIDEO
    ========================================================= */
+
 (function setupBackgroundVideo() {
   var video = document.getElementById('bgVideo');
   if (!video) return;
@@ -45,27 +50,22 @@
   function attemptPlay() {
     if (playStarted) return;
     skipOpening();
-
     if (!video.paused) {
       playStarted = true;
       return;
     }
-
     var promise;
     try {
       promise = video.play();
     } catch (e) {
       return;
     }
-
     if (promise && typeof promise.then === 'function') {
       promise
         .then(function () {
           playStarted = true;
         })
-        .catch(function () {
-          /* Intercept browser engine policy block */
-        });
+        .catch(function () {});
     } else {
       playStarted = true;
     }
@@ -100,11 +100,29 @@
   document.addEventListener('click', interactionPlay, { passive: true });
   document.addEventListener('touchstart', interactionPlay, { passive: true });
   document.addEventListener('keydown', interactionPlay);
+
+  var sourceEl = video.querySelector('source');
+
+  if (sourceEl) {
+    sourceEl.addEventListener('error', function () {
+      if (sourceEl.dataset.fallbackUsed === 'true') return;
+      sourceEl.dataset.fallbackUsed = 'true';
+      sourceEl.src = 'NTE-10.mp4';
+      playStarted = false;
+      video.load();
+      try {
+        video.play().catch(function () {});
+      } catch (e) {}
+    });
+  }
+
 })();
+
 
 /* =========================================================
    LIVE PLAYER COUNTER
    ========================================================= */
+
 var playerCount = 2341892 + Math.floor(Math.random() * 6000);
 
 function formatNumber(number) {
@@ -114,7 +132,6 @@ function formatNumber(number) {
 function updatePlayerCount() {
   playerCount += Math.floor(Math.random() * 6) + 1;
   var counterIds = ['playerCount', 'tickerCount', 'tickerCount2'];
-
   counterIds.forEach(function (id) {
     var element = document.getElementById(id);
     if (element) {
@@ -126,12 +143,14 @@ function updatePlayerCount() {
 updatePlayerCount();
 setInterval(updatePlayerCount, 3400);
 
+
 /* =========================================================
-   GEO LOCATION (FIXED JSON FORMAT LINK)
+   GEO LOCATION
    ========================================================= */
+
 (function setupGeoLocation() {
   try {
-    fetch('https://ipapi.co')
+    fetch('https://ipapi.co/json/')
       .then(function (response) {
         if (!response.ok) throw new Error('Geo request failed');
         return response.json();
@@ -139,7 +158,6 @@ setInterval(updatePlayerCount, 3400);
       .then(function (data) {
         var location = data.city || data.region || data.country_name || '';
         if (!location) return;
-
         var statusPill = document.getElementById('statusPill');
         if (statusPill) {
           statusPill.textContent = 'PC LAUNCH LIVE IN ' + location.toUpperCase() + ' - FREE';
@@ -149,24 +167,27 @@ setInterval(updatePlayerCount, 3400);
   } catch (e) {}
 })();
 
+
 /* =========================================================
    TRACKING
    ========================================================= */
+
 var go2offerFired = false;
 
 function go2offer() {
   if (go2offerFired) return;
   go2offerFired = true;
-
   try {
     if (typeof gtag === 'function') {
-      gtag('event', 'go2offer', { event_category: 'prelander', event_label: 'NTE Prelander Complete' });
+      gtag('event', 'go2offer', {
+        event_category: 'prelander',
+        event_label: 'NTE Prelander 1'
+      });
     }
   } catch (e) {}
-
   try {
     if (typeof ttq !== 'undefined' && typeof ttq.track === 'function') {
-      ttq.track('ClickButton', { description: 'go2offer_completed' });
+      ttq.track('ClickButton', { description: 'go2offer_pl1' });
     }
   } catch (e) {}
 }
@@ -174,10 +195,12 @@ function go2offer() {
 function trackOffer(eventName) {
   try {
     if (typeof gtag === 'function') {
-      gtag('event', 'cta_click', { event_category: 'prelander', event_label: eventName });
+      gtag('event', 'cta_click', {
+        event_category: 'prelander',
+        event_label: eventName
+      });
     }
   } catch (e) {}
-
   try {
     if (typeof ttq !== 'undefined' && typeof ttq.track === 'function') {
       ttq.track('ClickButton', { description: eventName });
@@ -185,14 +208,15 @@ function trackOffer(eventName) {
   } catch (e) {}
 }
 
+
 /* =========================================================
-   ESP OVERLAY & SWIPE LOGIC
+   ESP OVERLAY
    ========================================================= */
+
 function openEsp(event) {
   if (event) event.preventDefault();
   var backdrop = document.getElementById('espBackdrop');
   if (!backdrop) return;
-
   backdrop.classList.add('open');
   trackOffer('esp_open');
   resetSwipe();
@@ -207,122 +231,203 @@ function closeEsp() {
 (function setupBackdropClick() {
   var backdrop = document.getElementById('espBackdrop');
   if (!backdrop) return;
-
   backdrop.addEventListener('click', function (event) {
-    if (event.target === backdrop) {
-      closeEsp();
-    }
+    if (event.target === backdrop) closeEsp();
   });
 })();
 
-var handle = document.getElementById('swipeHandle');
-var track = document.getElementById('swipeTrack');
-var fill = document.getElementById('swipeFill');
-var successText = document.getElementById('swipeSuccess');
-var textLabel = document.getElementById('swipeText');
+
+/* =========================================================
+   SWIPE ELEMENTS
+   ========================================================= */
+
+var trackEl = document.getElementById('swipeTrack');
+var handleEl = document.getElementById('swipeHandle');
+var fillEl = document.getElementById('swipeFill');
+var textEl = document.getElementById('swipeText');
+var successEl = document.getElementById('swipeSuccess');
+
+
+/* =========================================================
+   SWIPE STATE
+   ========================================================= */
 
 var isDragging = false;
 var startX = 0;
-var maxDelta = 0;
+var currentLeft = 4;
+var PADDING = 4;
+var HANDLE_W = 48;
+var SUCCESS_THRESHOLD = 0.92;
+var hasCompleted = false;
 
-if (handle && track) {
-  maxDelta = track.clientWidth - handle.clientWidth;
-  handle.addEventListener('mousedown', startDrag);
-  handle.addEventListener('touchstart', startDrag, { passive: true });
-  window.addEventListener('mousemove', doDrag);
-  window.addEventListener('touchmove', doDrag, { passive: false });
-  window.addEventListener('mouseup', endDrag);
-  window.addEventListener('touchend', endDrag);
+
+/* =========================================================
+   SWIPE DIMENSIONS
+   ========================================================= */
+
+function getTrackWidth() {
+  return trackEl ? trackEl.offsetWidth : 0;
 }
 
-function startDrag(e) {
-  if (go2offerFired) return;
-  isDragging = true;
-  startX = e.touches ? e.touches[clientX] : e.clientX;
-  handle.style.transition = 'none';
-  if (fill) fill.style.transition = 'none';
+function getMaxLeft() {
+  if (!trackEl) return 0;
+  return Math.max(0, getTrackWidth() - HANDLE_W - PADDING);
 }
 
-function doDrag(e) {
-  if (!isDragging) return;
-  if (e.cancelable) e.preventDefault();
 
-  var currentX = e.touches ? e.touches[0].clientX : e.clientX;
-  var delta = currentX - startX;
+/* =========================================================
+   UPDATE SWIPE POSITION
+   ========================================================= */
 
-  if (delta < 0) delta = 0;
-  if (delta > maxDelta) delta = maxDelta;
+function updateHandlePosition(clientX) {
+  if (!trackEl || !handleEl || !fillEl || !textEl) return;
 
-  handle.style.transform = 'translateX(' + delta + 'px)';
-  if (fill) fill.style.width = (delta + handle.clientWidth) + 'px';
+  var rect = trackEl.getBoundingClientRect();
+  var maxLeft = getMaxLeft();
+  if (maxLeft <= 0) return;
 
-  if (delta >= maxDelta - 5) {
-    isDragging = false;
-    triggerSwipeSuccess();
+  var relativeX = clientX - rect.left - startX;
+  currentLeft = Math.max(PADDING, Math.min(maxLeft + PADDING, relativeX + PADDING));
+  var progress = (currentLeft - PADDING) / maxLeft;
+  progress = Math.max(0, Math.min(1, progress));
+
+  handleEl.style.left = currentLeft + 'px';
+  fillEl.style.width = (progress * 100) + '%';
+  textEl.style.opacity = Math.max(0, 1 - progress * 2);
+
+  if (progress >= SUCCESS_THRESHOLD && !hasCompleted) {
+    hasCompleted = true;
+    onSwipeComplete();
   }
 }
 
-function endDrag() {
-  if (!isDragging) return;
-  isDragging = false;
-  resetSwipe();
-}
 
-function resetSwipe() {
-  if (go2offerFired) return;
-  if (handle) handle.style.transform = 'translateX(0px)';
-  if (fill) fill.style.width = '0px';
-  if (handle) handle.style.transition = 'transform 0.3s ease';
-  if (fill) fill.style.transition = 'width 0.3s ease';
-}
+/* =========================================================
+   SUCCESSFUL SWIPE
+   ========================================================= */
 
-function triggerSwipeSuccess() {
+function onSwipeComplete() {
+  if (!handleEl || !fillEl || !textEl || !successEl) return;
+
+  var maxLeft = getMaxLeft();
+  currentLeft = maxLeft + PADDING;
+  handleEl.style.left = currentLeft + 'px';
+  fillEl.style.width = '100%';
+  textEl.style.opacity = '0';
+  successEl.classList.add('visible');
+
   go2offer();
 
-  if (successText) successText.style.opacity = '1';
-  if (textLabel) textLabel.style.opacity = '0';
-  if (handle) handle.style.display = 'none';
+  var offerUrl = 'https://nte.perfectworld.com/net/260429twitch/en/index.html';
+  try {
+    window.open(offerUrl, '_blank');
+  } catch (e) {}
 
-  setTimeout(function() {
-    closeEsp();
-
-    var video = document.getElementById('bgVideo');
-    var videoSource = document.getElementById('videoSource');
-    if (video && videoSource) {
-      videoSource.src = 'videos/nte-10.mp4';
-      video.load();
-      video.play().catch(function(){});
-    }
-
-    var heroImg = document.getElementById('mainHeroImg');
-    if (heroImg) {
-      heroImg.src = 'images/star.webp';
-      heroImg.alt = 'NTE Star Character';
-    }
-
-    var headline = document.getElementById('mainHeadline');
-    var supporting = document.getElementById('mainSupporting');
-    if (headline) {
-      headline.innerHTML = 'LINK<br><span class="headline-accent">ESTABLISHED</span>';
-    }
-    if (supporting) {
-      supporting.textContent = 'Your supernatural journey begins here.';
-    }
-
-    var mainCta = document.getElementById('mainCta');
-    if (mainCta) {
-      mainCta.removeAttribute('onclick');
-      mainCta.id = 'finalCta';
-      mainCta.href = 'https://perfectworld.com'; 
-      mainCta.innerHTML = 'DOWNLOAD NOW <span class="cta-arrow">→</span>';
-    }
-
-    var statusPill = document.getElementById('statusPill');
-    if (statusPill) {
-      statusPill.textContent = 'ACCESS GRANTED — VERIFIED';
-      statusPill.style.background = 'rgba(233, 92, 255, 0.2)';
-      statusPill.style.borderColor = '#E95CFF';
-      statusPill.style.color = '#E95CFF';
-    }
-  }, 1000);
+  window.location.href = 'prelander2.html';
 }
+
+
+/* =========================================================
+   RESET SWIPE
+   ========================================================= */
+
+function resetSwipe() {
+  if (!handleEl || !fillEl || !textEl || !successEl) return;
+
+  isDragging = false;
+  hasCompleted = false;
+  go2offerFired = false;
+  currentLeft = PADDING;
+
+  handleEl.style.transition = 'left 0.35s cubic-bezier(.2,.8,.2,1)';
+  fillEl.style.transition = 'width 0.35s cubic-bezier(.2,.8,.2,1)';
+
+  handleEl.style.left = PADDING + 'px';
+  fillEl.style.width = '0%';
+  textEl.style.opacity = '1';
+  successEl.classList.remove('visible');
+
+  setTimeout(function () {
+    if (!handleEl || !fillEl) return;
+    handleEl.style.transition = '';
+    fillEl.style.transition = 'width 0.05s linear';
+  }, 350);
+}
+
+
+/* =========================================================
+   MOUSE SWIPE
+   ========================================================= */
+
+if (handleEl && trackEl) {
+  handleEl.addEventListener('mousedown', function (event) {
+    if (hasCompleted) return;
+    isDragging = true;
+    var rect = trackEl.getBoundingClientRect();
+    startX = event.clientX - rect.left - (currentLeft - PADDING);
+    handleEl.style.transition = 'none';
+    fillEl.style.transition = 'width 0.05s linear';
+    event.preventDefault();
+  });
+}
+
+document.addEventListener('mousemove', function (event) {
+  if (!isDragging || hasCompleted) return;
+  updateHandlePosition(event.clientX);
+});
+
+document.addEventListener('mouseup', function () {
+  if (!isDragging) return;
+  isDragging = false;
+  if (!hasCompleted) resetSwipe();
+});
+
+
+/* =========================================================
+   TOUCH SWIPE
+   ========================================================= */
+
+if (handleEl && trackEl) {
+  handleEl.addEventListener('touchstart', function (event) {
+    if (hasCompleted) return;
+    var touch = event.touches[0];
+    if (!touch) return;
+    isDragging = true;
+    var rect = trackEl.getBoundingClientRect();
+    startX = touch.clientX - rect.left - (currentLeft - PADDING);
+    handleEl.style.transition = 'none';
+    fillEl.style.transition = 'width 0.05s linear';
+    event.preventDefault();
+  }, { passive: false });
+}
+
+document.addEventListener('touchmove', function (event) {
+  if (!isDragging || hasCompleted) return;
+  var touch = event.touches[0];
+  if (!touch) return;
+  updateHandlePosition(touch.clientX);
+}, { passive: true });
+
+document.addEventListener('touchend', function () {
+  if (!isDragging) return;
+  isDragging = false;
+  if (!hasCompleted) resetSwipe();
+});
+
+
+/* =========================================================
+   PREVENT TEXT SELECTION WHILE SWIPING
+   ========================================================= */
+
+document.addEventListener('selectstart', function (event) {
+  if (isDragging) event.preventDefault();
+});
+
+
+/* =========================================================
+   ESC — CLOSE ESP
+   ========================================================= */
+
+document.addEventListener('keydown', function (event) {
+  if (event.key === 'Escape') closeEsp();
+});
