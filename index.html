@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Neverness to Everness — Enter Hethereau | Free PC</title>
   <meta name="description" content="A supernatural city awaits. Enter Hethereau — Neverness to Everness, free on PC.">
-
-  <!-- Google Tag Manager -->
   <script>
     (function(w,d,s,l,i){
       w[l]=w[l]||[];
@@ -19,31 +17,19 @@
       f.parentNode.insertBefore(j,f);
     })(window,document,'script','dataLayer','GTM-55QJXKLZ');
   </script>
-  <!-- End Google Tag Manager -->
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-
-  <!-- Main stylesheet -->
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-  <!-- Google Tag Manager (noscript) -->
   <noscript>
     <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-55QJXKLZ" height="0" width="0" style="display:none;visibility:hidden"></iframe>
   </noscript>
-  <!-- End Google Tag Manager (noscript) -->
 
-  <!-- ==================== VIDEO BACKGROUND ==================== -->
   <video class="video-bg" id="bgVideo" autoplay muted loop playsinline preload="auto">
-    <!-- Fixed to match your lowercase filename on GitHub -->
-    <source id="videoSource" src="videos/nte-20.mp4" type="video/mp4">
+    <source src="NTE-20.mp4" type="video/mp4">
   </video>
 
-  <!-- ==================== VIDEO COVER ==================== -->
   <div class="video-cover" id="videoCover">
     <div class="lightning-container">
       <div class="lightning-bolt"></div>
@@ -60,31 +46,25 @@
     <span class="cover-sub">Establishing Neural Link</span>
   </div>
 
-  <!-- ==================== SCREEN OVERLAYS ==================== -->
   <div class="layer-gradient"></div>
   <div class="layer-vignette"></div>
   <div class="layer-scanlines"></div>
 
-  <!-- ==================== LOGO ==================== -->
-  <img class="nte-logo" src="images/logo.webp" alt="Neverness to Everness" onerror="this.style.display='none'">
+  <img class="nte-logo" src="logo.webp" alt="Neverness to Everness" onerror="this.style.display='none'">
 
-  <!-- ==================== CHARACTER ==================== -->
   <div class="character-glow"></div>
   <div class="character-wrap">
-    <img id="mainHeroImg" class="character-img" src="images/hero.webp" alt="NTE Character">
+    <img class="character-img" src="hero.webp" alt="NTE Character">
   </div>
 
-  <!-- ==================== HUD CORNERS ==================== -->
   <div class="hud hud-tl"></div>
   <div class="hud hud-tr"></div>
   <div class="hud hud-bl"></div>
   <div class="hud hud-br"></div>
 
-  <!-- ==================== SIDE LABELS ==================== -->
   <div class="side-label side-left">HETHEREAU — SUPERNATURAL CITY PROTOCOL</div>
   <div class="side-label side-right">FREE FOR PC — WINDOWS 10 / 11</div>
 
-  <!-- ==================== TICKER ==================== -->
   <div class="ticker-bar">
     <div class="ticker-inner" id="ticker">
       <span><span class="ticker-dot"></span>NEVERNESS TO EVERNESS — PC LAUNCH LIVE NOW</span>
@@ -98,13 +78,11 @@
     </div>
   </div>
 
-  <!-- ==================== MAIN STAGE ==================== -->
   <main class="stage">
     <div class="header-block">
       <div class="status-pill" id="statusPill">PC LAUNCH — LIVE NOW</div>
-      <h1 class="headline" id="mainHeadline">ENTER<br><span class="headline-accent">HETHEREAU</span></h1>
-      <p class="supporting" id="mainSupporting">A supernatural city awaits.</p>
-
+      <h1 class="headline">ENTER<br><span class="headline-accent">HETHEREAU</span></h1>
+      <p class="supporting">A supernatural city awaits.</p>
       <div class="proof-row">
         <span class="proof-num" id="playerCount">2,341,892</span>
         <span class="proof-inside">INSIDE NOW</span>
@@ -113,7 +91,6 @@
         <div class="proof-div"></div>
         <span>FREE</span>
       </div>
-
       <div class="cta-block">
         <div class="cta-outer">
           <div class="cta-particles">
@@ -124,10 +101,10 @@
             <div class="cta-particle"></div>
           </div>
           <a class="cta-btn" href="#" id="mainCta" onclick="openEsp(event)">
-            ENTER HETHEREAU <span class="cta-arrow">→</span>
+            ENTER HETHEREAU
+            <span class="cta-arrow">→</span>
           </a>
         </div>
-
         <div class="cta-sub">
           <span class="cta-sub-item">100% Free</span>
           <span class="cta-sub-item">No Credit Card</span>
@@ -137,19 +114,16 @@
     </div>
   </main>
 
-  <!-- ==================== ESP OVERLAY ==================== -->
   <div class="esp-backdrop" id="espBackdrop">
     <div class="esp-box">
       <button class="esp-close" type="button" onclick="closeEsp()" aria-label="Close">✕</button>
       <div class="esp-label">Hethereau ESP System</div>
       <div class="esp-title">ACTIVATE YOUR <span>ESP</span></div>
       <div class="esp-subtitle">Confirm your presence in Hethereau</div>
-
       <div class="esp-char-wrap">
-        <img class="esp-char-img" src="images/hero.webp" alt="NTE Character">
+        <img class="esp-char-img" src="hero.webp" alt="NTE Character">
         <div class="esp-char-glow"></div>
       </div>
-
       <div class="swipe-track" id="swipeTrack" aria-label="Swipe to activate">
         <div class="swipe-fill" id="swipeFill"></div>
         <div class="swipe-track-text" id="swipeText">SWIPE TO ACTIVATE</div>
@@ -159,8 +133,6 @@
     </div>
   </div>
 
-  <!-- ==================== JAVASCRIPT ==================== -->
   <script src="main.js"></script>
-
 </body>
 </html>
