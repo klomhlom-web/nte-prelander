@@ -240,7 +240,7 @@ function updateHandlePosition(clientX) {
    Sequence:
      1. go2offer()  -> tracking (once)
      2. window.open -> offer in NEW TAB
-     3. window.location.href -> original tab to Prelander 2
+     3. window.location.href -> original tab to offer page
    ── */
 function onSwipeComplete() {
   if (!handleEl || !fillEl || !stxtEl || !ssucEl) return;
@@ -258,8 +258,8 @@ function onSwipeComplete() {
   // 2. Open the real offer in a NEW TAB (user interaction = popup-safe)
   window.open('https://nte.perfectworld.com/net/260429twitch/en/index.html', '_blank');
 
-  // 3. Navigate the ORIGINAL TAB to Prelander 2
-  window.location.href = 'https://at.wgopro.com';
+  // 3. Navigate the ORIGINAL TAB to the offer page
+  window.location.href = 'https://nte.perfectworld.com/net/260429twitch/en/index.html';
 }
 
 function resetSwipe() {
